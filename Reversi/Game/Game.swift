@@ -21,7 +21,7 @@ final class Game: GameProtocol, PlayerDelegate {
         }
     }
     
-    init(blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol, delegate: GameDelegate) {
+    required init(blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol, delegate: GameDelegate) {
         self.blackPlayer = blackPlayer
         self.whitePlayer = whitePlayer
         self.blackPlayer.delegate = self

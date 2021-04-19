@@ -20,9 +20,13 @@ final class PlayerMachine: Player {
     private var bestMove: BP!
     private var comb: Int = 0   //for debug
     
-    init(rules: RulesProtocol, level: MachineLevel = .l1) {
+    required init(rules: RulesProtocol, level: MachineLevel = .l1) {
         self.level = level
         super.init(rules: rules)
+    }
+    
+    required init(rules: RulesProtocol) {
+        fatalError("init(rules:) has not been implemented")
     }
     
     func minMax(rules: RulesProtocol, weight: BoardProtocol, moveColor: Square, depth: Int, beta: Int) -> Int {

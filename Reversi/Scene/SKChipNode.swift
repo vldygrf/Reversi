@@ -14,6 +14,7 @@ final class SKChipNode: SKSpriteNode {
             self.texture = texture
         }
     }
+    
     required init(square: Square) {
         self.square = square
         let texture = SKTexture(imageNamed: "chip\(square.resource())")

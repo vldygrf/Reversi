@@ -13,7 +13,7 @@ final class Board: BoardProtocol {
     private lazy var anglePoints: [BP] = []
     private lazy var angles: [BoardAngle] = []
     
-    init(rows: Int, cols: Int, defaultValue: Square) {
+    required init(rows: Int, cols: Int, defaultValue: Square) {
         self.rows = rows
         self.cols = cols
         count = rows * cols
@@ -38,7 +38,7 @@ final class Board: BoardProtocol {
         }
     }
     
-    init(board: BoardProtocol) {
+    required init(board: BoardProtocol) {
         rows = board.rows
         cols = board.cols
         count = board.count

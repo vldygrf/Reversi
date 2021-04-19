@@ -16,7 +16,7 @@ class Player: PlayerProtocol {
         return thinking
     }
     
-    init(rules: RulesProtocol) {
+    required init(rules: RulesProtocol) {
         self.rules = rules
     }
     
