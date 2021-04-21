@@ -24,18 +24,9 @@ class Player: PlayerProtocol {
         thinking = true
     }
     
-    func canTake(move: BP, color: Square) -> Bool {
-        return rules.isValid(move: move, color: color)
-    }
-    
-    func take(move: BP, color: Square) {
-        rules.make(move: move, color: color)
-        delegate?.didMove(player: self)
+    func make(move: BP) {
+        delegate?.take(move: move)
         thinking = false
-    }
-    
-    func doesMoveExist(color: Square) -> Bool {
-        return rules.doesMoveExist(color: color)
     }
     
     func stopMove() {

@@ -10,6 +10,7 @@ import Foundation
 final class Game: GameProtocol, PlayerDelegate {
     weak var delegate: GameDelegate?
     private var moveColor: Square = .black
+    private var rules: RulesProtocol
     var blackPlayer: PlayerProtocol {
         didSet {
             blackPlayer.delegate = self
@@ -21,7 +22,8 @@ final class Game: GameProtocol, PlayerDelegate {
         }
     }
     
-    required init(blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol, delegate: GameDelegate) {
+    required init(rules: RulesProtocol, blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol, delegate: GameDelegate) {
+        self.rules = rules
         self.blackPlayer = blackPlayer
         self.whitePlayer = whitePlayer
         self.blackPlayer.delegate = self
@@ -31,11 +33,11 @@ final class Game: GameProtocol, PlayerDelegate {
     }
     
     func findMove() {
-        if (playerToMove().doesMoveExist(color: moveColor)) {
+        if (rules.doesMoveExist(color: moveColor)) {
             playerToMove().findMove(color: moveColor)
         } else {
             moveColor = moveColor.opposite()
-            if (playerToMove().doesMoveExist(color: moveColor)) {
+            if (rules.doesMoveExist(color: moveColor)) {
                 playerToMove().findMove(color: moveColor)
             } else {
                 print("Game is over")
@@ -47,21 +49,18 @@ final class Game: GameProtocol, PlayerDelegate {
         return (moveColor == .black) ? blackPlayer : whitePlayer
     }
     
-    func didMove(player: PlayerProtocol) {
-        moveColor = moveColor.opposite()
-        delegate?.didMove()
-        findMove()
-    }
-    
     func waitingForTouch() -> Bool {
         return (playerToMove() is Player) && (playerToMove().getThinking())
     }
     
     func canTake(move: BP) -> Bool {
-        return playerToMove().canTake(move: move, color: moveColor)
+        return rules.isValid(move: move, color: moveColor)
     }
     
     func take(move: BP) {
-        playerToMove().take(move: move, color: moveColor)
+        rules.make(move: move, color: moveColor)
+        moveColor = moveColor.opposite()
+        delegate?.didMove()
+        findMove()
     }
 }

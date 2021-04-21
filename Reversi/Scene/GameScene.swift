@@ -30,7 +30,7 @@ final class GameScene: SKScene, GameDelegate {
         let rules = Rules(board: boardNode.board)
         let blackPlayer = Player(rules: rules)
         let whitePlayer = PlayerMachine(rules: rules, level: .l4)
-        game = Game(blackPlayer: blackPlayer, whitePlayer: whitePlayer, delegate: self)
+        game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer, delegate: self)
         
         addChild(boardNode)
     }

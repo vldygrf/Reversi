@@ -8,5 +8,5 @@
 import Foundation
 
 protocol PlayerDelegate: AnyObject {
-    func didMove(player: PlayerProtocol)
+    func take(move: BP)
 }

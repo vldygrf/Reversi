@@ -122,7 +122,7 @@ final class PlayerMachine: Player {
             print("comb = \(comb), res = \(res), sec = \(dif), speed = \(Double(comb) / dif)")
             
             if (!moveWorkItem.isCancelled) {
-                take(move: bestMove, color: color)
+                make(move: bestMove)
                 //rules.board.log()
             }
         }
