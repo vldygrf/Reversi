@@ -17,13 +17,13 @@ struct BP {
     }
     
     init(point: BP) {
-        row = point.row
-        col = point.col
+        self.row = point.row
+        self.col = point.col
     }
     
     mutating func add(_ point: BP) {
-        row += point.row
-        col += point.col
+        self.row += point.row
+        self.col += point.col
     }
 }
 

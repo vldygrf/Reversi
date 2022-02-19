@@ -13,7 +13,8 @@ enum BoardWeightType {
     case mobility
 }
 
-final class BoardWeight {
+final
+class BoardWeight {
     static func fill(weight: BoardProtocol, board: BoardProtocol, type: BoardWeightType) {
         switch type {
         case .greed, .greedSmart:

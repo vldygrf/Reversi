@@ -7,18 +7,19 @@
 
 import Foundation
 
-final class Game: GameProtocol, PlayerDelegate {
+final
+class Game: GameProtocol, PlayerDelegate {
     weak var delegate: GameDelegate?
     private var moveColor: Square = .black
     private var rules: RulesProtocol
     var blackPlayer: PlayerProtocol {
         didSet {
-            blackPlayer.delegate = self
+            self.blackPlayer.delegate = self
         }
     }
     var whitePlayer: PlayerProtocol {
         didSet {
-            whitePlayer.delegate = self
+            self.whitePlayer.delegate = self
         }
     }
     
@@ -29,16 +30,16 @@ final class Game: GameProtocol, PlayerDelegate {
         self.blackPlayer.delegate = self
         self.whitePlayer.delegate = self
         self.delegate = delegate
-        findMove()
+        self.findMove()
     }
     
     func findMove() {
-        if (rules.doesMoveExist(color: moveColor)) {
-            playerToMove().findMove(color: moveColor)
+        if (self.rules.doesMoveExist(color: self.moveColor)) {
+            self.playerToMove().findMove(color: self.moveColor)
         } else {
-            moveColor = moveColor.opposite()
-            if (rules.doesMoveExist(color: moveColor)) {
-                playerToMove().findMove(color: moveColor)
+            self.moveColor = self.moveColor.opposite()
+            if (self.rules.doesMoveExist(color: self.moveColor)) {
+                self.playerToMove().findMove(color: self.moveColor)
             } else {
                 print("Game is over")
             }
@@ -46,21 +47,21 @@ final class Game: GameProtocol, PlayerDelegate {
     }
     
     func playerToMove() -> PlayerProtocol {
-        return (moveColor == .black) ? blackPlayer : whitePlayer
+        return (self.moveColor == .black) ? self.blackPlayer : self.whitePlayer
     }
     
     func waitingForTouch() -> Bool {
-        return (playerToMove() is Player) && (playerToMove().getThinking())
+        return (self.playerToMove() is Player) && (self.playerToMove().thinking)
     }
     
     func canTake(move: BP) -> Bool {
-        return rules.isValid(move: move, color: moveColor)
+        return self.rules.isValid(move: move, color: moveColor)
     }
     
     func take(move: BP) {
-        rules.make(move: move, color: moveColor)
-        moveColor = moveColor.opposite()
-        delegate?.didMove()
-        findMove()
+        self.rules.make(move: move, color: self.moveColor)
+        self.moveColor = self.moveColor.opposite()
+        self.delegate?.didMove()
+        self.findMove()
     }
 }

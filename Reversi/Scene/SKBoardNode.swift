@@ -7,16 +7,17 @@
 
 import SpriteKit
 
-final class SKBoardNode: SKNode {
+final
+class SKBoardNode: SKNode {
     var size: CGSize? {
         didSet {
-            resize()
+            self.resize()
         }
     }
     
     var board: BoardProtocol {
         didSet {
-            resize()
+            self.resize()
         }
     }
     
@@ -34,36 +35,40 @@ final class SKBoardNode: SKNode {
     }
 
     func resize() {
-        guard let size = size else { return }
+        guard let size = self.size else { return }
         
         removeAllChildren()
         var x: CGFloat, y: CGFloat = 0.0
             
-        squareWidth = size.width / CGFloat(board.cols)
-        squareHeight = size.height / CGFloat(board.rows)
+        self.squareWidth = size.width / CGFloat(self.board.cols)
+        self.squareHeight = size.height / CGFloat(self.board.rows)
             
         var chip: SKChipNode
-        for row in 1...board.rows {
+        let rows = self.board.rows
+        for row in 1...rows {
             x = 0.0
-            for col in 1...board.cols {
-                chip = SKChipNode(square: board[row, col])
-                chip.size = CGSize(width: squareWidth, height: squareHeight)
-                chip.position = CGPoint(x: x + squareWidth / 2.0, y: y + squareHeight / 2.0)
+            let cols = self.board.cols
+            for col in 1...cols {
+                chip = SKChipNode(square: self.board[row, col])
+                chip.size = CGSize(width: self.squareWidth, height: self.squareHeight)
+                chip.position = CGPoint(x: x + self.squareWidth / 2.0, y: y + self.squareHeight / 2.0)
                 addChild(chip)
-                x += squareWidth
+                x += self.squareWidth
             }
                 
-            y += squareHeight
+            y += self.squareHeight
         }
     }
     
     func applyBoard() {
         DispatchQueue.main.async { [self] in
             var index = 0
-            for row in 1...board.rows {
-                for col in 1...board.cols {
+            let rows = self.board.rows
+            for row in 1...rows {
+                let cols = self.board.cols
+                for col in 1...cols {
                     if let child = children[index] as? SKChipNode/*, child.square != board[row, col]*/ {
-                        child.square = board[row, col]
+                        child.square = self.board[row, col]
                     }
                         
                     index += 1
@@ -73,12 +78,12 @@ final class SKBoardNode: SKNode {
     }
     
     subscript(row: Int, col: Int) -> SKChipNode? {
-        let index = (row - 1) * board.cols + (col - 1)
+        let index = (row - 1) * self.board.cols + (col - 1)
         return children[index] as? SKChipNode
     }
     
     func boardPoint(touchPoint: CGPoint) -> BP {
-        let bp = BP(Int(touchPoint.y / squareHeight) + 1, Int(touchPoint.x / squareWidth) + 1)
+        let bp = BP(Int(touchPoint.y / self.squareHeight) + 1, Int(touchPoint.x / self.squareWidth) + 1)
         return bp
     }
 }

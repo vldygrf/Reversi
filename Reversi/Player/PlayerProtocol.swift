@@ -12,5 +12,5 @@ protocol PlayerProtocol: AnyObject {
     func findMove(color: Square)
     func stopMove()
     func make(move: BP)
-    func getThinking() -> Bool
+    var thinking: Bool { get }
 }

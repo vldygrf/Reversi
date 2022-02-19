@@ -7,7 +7,8 @@
 
 import Foundation
 
-final class Rules: RulesProtocol {    
+final
+class Rules: RulesProtocol {
     var board: BoardProtocol
     
     required init(board: BoardProtocol) {
@@ -27,14 +28,14 @@ final class Rules: RulesProtocol {
         var enemyChips = false
             
         var pos = BP(start.row + direction.row, start.col + direction.col)
-        while (board[pos.row, pos.col] != .frame) {
-            if (board[pos.row, pos.col] == .empty) {
+        while (self.board[pos.row, pos.col] != .frame) {
+            if (self.board[pos.row, pos.col] == .empty) {
                 return false
             }else
-            if (opposite(square: board[pos.row, pos.col], color: color)) {
+            if (self.opposite(square: self.board[pos.row, pos.col], color: color)) {
                 enemyChips = true
             }else
-            if (board[pos.row, pos.col] == color) {
+            if (self.board[pos.row, pos.col] == color) {
                 return enemyChips
             }
             
@@ -45,47 +46,47 @@ final class Rules: RulesProtocol {
     }
     
     func isValid(move: BP, color: Square) -> Bool {
-        return ((board[move.row, move.col] == .empty)
+        return ((self.board[move.row, move.col] == .empty)
             &&
-            (   isValid(direction: BP(0, -1), start: move, color: color)
-             || isValid(direction: BP(1, -1), start: move, color: color)
-             || isValid(direction: BP(1, 0), start: move, color: color)
-             || isValid(direction: BP(1, 1), start: move, color: color)
-             || isValid(direction: BP(0, 1), start: move, color: color)
-             || isValid(direction: BP(-1, 1), start: move, color: color)
-             || isValid(direction: BP(-1, 0), start: move, color: color)
-             || isValid(direction: BP(-1, -1), start: move, color: color)
+            (   self.isValid(direction: BP(0, -1), start: move, color: color)
+            || self.isValid(direction: BP(1, -1), start: move, color: color)
+            || self.isValid(direction: BP(1, 0), start: move, color: color)
+            || self.isValid(direction: BP(1, 1), start: move, color: color)
+            || self.isValid(direction: BP(0, 1), start: move, color: color)
+            || self.isValid(direction: BP(-1, 1), start: move, color: color)
+            || self.isValid(direction: BP(-1, 0), start: move, color: color)
+            || self.isValid(direction: BP(-1, -1), start: move, color: color)
             )
         )
     }
     
     func reverse(direction: BP, start: BP, color: Square) {
-        if (isValid(direction: direction, start: start, color: color)) {
+        if (self.isValid(direction: direction, start: start, color: color)) {
             var pos = BP(start.row + direction.row, start.col + direction.col)
             
-            while(opposite(square: board[pos.row, pos.col], color: color)) {
-                board[pos.row, pos.col] = color //ставим фишку
+            while(self.opposite(square: self.board[pos.row, pos.col], color: color)) {
+                self.board[pos.row, pos.col] = color //ставим фишку
                 pos.add(direction)
             }
         }
     }
     
     func make(move:BP, color: Square) {
-        board[move.row, move.col] = color  //ставим фишку
-        reverse(direction: BP(0, -1), start: move, color: color)
-        reverse(direction: BP(1, -1), start: move, color: color)
-        reverse(direction: BP(1, 0), start: move, color: color)
-        reverse(direction: BP(1, 1), start: move, color: color)
-        reverse(direction: BP(0, 1), start: move, color: color)
-        reverse(direction: BP(-1, 1), start: move, color: color)
-        reverse(direction: BP(-1, 0), start: move, color: color)
-        reverse(direction: BP(-1, -1), start: move, color: color)
+        self.board[move.row, move.col] = color  //ставим фишку
+        self.reverse(direction: BP(0, -1), start: move, color: color)
+        self.reverse(direction: BP(1, -1), start: move, color: color)
+        self.reverse(direction: BP(1, 0), start: move, color: color)
+        self.reverse(direction: BP(1, 1), start: move, color: color)
+        self.reverse(direction: BP(0, 1), start: move, color: color)
+        self.reverse(direction: BP(-1, 1), start: move, color: color)
+        self.reverse(direction: BP(-1, 0), start: move, color: color)
+        self.reverse(direction: BP(-1, -1), start: move, color: color)
     }
     
     func doesMoveExist(color: Square) -> Bool {
-        for row in 1...board.rows {
-            for col in 1...board.cols {
-                if (isValid(move: BP(row, col), color: color)) {
+        for row in 1...self.board.rows {
+            for col in 1...self.board.cols {
+                if (self.isValid(move: BP(row, col), color: color)) {
                     return true
                 }
             }
@@ -95,6 +96,6 @@ final class Rules: RulesProtocol {
     }
     
     func doesMoveExist() -> Bool {
-        return (doesMoveExist(color: .black)) || (doesMoveExist(color: .white))
+        return (self.doesMoveExist(color: .black)) || (self.doesMoveExist(color: .white))
     }
 }

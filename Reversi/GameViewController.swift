@@ -9,7 +9,8 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-final class GameViewController: UIViewController {
+final
+class GameViewController: UIViewController {
     let scene = GameScene(size: CGSize.zero)
     
     override func loadView() {
@@ -17,22 +18,22 @@ final class GameViewController: UIViewController {
     }
     
     func view() -> SKView {
-        return view as! SKView
+        return self.view as! SKView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scene.anchorPoint = CGPoint(x: 0.0, y: 0.0)
-        view().presentScene(scene)
-        view().showsFPS = true
-        view().showsNodeCount = true
+        self.scene.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+        self.view().presentScene(self.scene)
+        self.view().showsFPS = true
+        self.view().showsNodeCount = true
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        scene.size = CGSize(width: view.bounds.size.width, height: view.bounds.size.height)
+        self.scene.size = CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height)
     }
 
     override var shouldAutorotate: Bool {

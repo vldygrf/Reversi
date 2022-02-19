@@ -8,7 +8,8 @@
 import SpriteKit
 import GameplayKit
 
-final class GameScene: SKScene, GameDelegate {
+final
+class GameScene: SKScene, GameDelegate {
     private var boardNode = SKBoardNode(board: Board(rows: 8, cols: 8, defaultValue: .empty), size: nil)
     private var game: Game!
     
@@ -19,20 +20,20 @@ final class GameScene: SKScene, GameDelegate {
         set(newSize) {
             super.size = newSize
             let min = (size.width < size.height) ? size.width : size.height
-            boardNode.size = CGSize(width: min, height: min)
-            boardNode.position = CGPoint(x: (size.width - boardNode.size!.width) / 2.0, y: (size.height - boardNode.size!.height) / 2.0)
+            self.boardNode.size = CGSize(width: min, height: min)
+            self.boardNode.position = CGPoint(x: (size.width - self.boardNode.size!.width) / 2.0, y: (size.height - self.boardNode.size!.height) / 2.0)
         }
     }
     
     required override init(size: CGSize) {
         super.init(size: size)
         
-        let rules = Rules(board: boardNode.board)
+        let rules = Rules(board: self.boardNode.board)
         let blackPlayer = Player(rules: rules)
-        let whitePlayer = PlayerMachine(rules: rules, level: .l4)
-        game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer, delegate: self)
+        let whitePlayer = PlayerMachine(rules: rules, level: .l5)
+        self.game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer, delegate: self)
         
-        addChild(boardNode)
+        addChild(self.boardNode)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -48,13 +49,13 @@ final class GameScene: SKScene, GameDelegate {
     }
     
     func touchUp(atPoint pos: CGPoint) {
-        guard (game.waitingForTouch()) else { return }
-        let bp = boardNode.boardPoint(touchPoint: pos)
+        guard (self.game.waitingForTouch()) else { return }
+        let bp = self.boardNode.boardPoint(touchPoint: pos)
         
         print(bp)
             
-        if (game.canTake(move: bp)) {
-            game.take(move: bp)
+        if (self.game.canTake(move: bp)) {
+            self.game.take(move: bp)
         }
     }
     
@@ -75,6 +76,6 @@ final class GameScene: SKScene, GameDelegate {
     }
     
     func didMove() {
-        boardNode.applyBoard()
+        self.boardNode.applyBoard()
     }
 }

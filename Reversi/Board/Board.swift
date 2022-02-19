@@ -7,8 +7,11 @@
 
 import Foundation
 
-final class Board: BoardProtocol {
-    let rows: Int, cols: Int, count: Int
+final
+class Board: BoardProtocol {
+    let rows: Int
+    let cols: Int
+    let count: Int
     var squares: [Square] = []
     private lazy var anglePoints: [BP] = []
     private lazy var angles: [BoardAngle] = []
@@ -16,8 +19,8 @@ final class Board: BoardProtocol {
     required init(rows: Int, cols: Int, defaultValue: Square) {
         self.rows = rows
         self.cols = cols
-        count = rows * cols
-        squares = Array(repeating: defaultValue, count: (rows + 2) * (cols + 2))
+        self.count = rows * cols
+        self.squares = Array(repeating: defaultValue, count: (rows + 2) * (cols + 2))
     
         for col in 0..<cols+2 {
             self[0, col] = .frame
@@ -39,20 +42,20 @@ final class Board: BoardProtocol {
     }
     
     required init(board: BoardProtocol) {
-        rows = board.rows
-        cols = board.cols
-        count = board.count
-        squares = board.squares
+        self.rows = board.rows
+        self.cols = board.cols
+        self.count = board.count
+        self.squares = board.squares
     }
     
     func indexIsValid(row: Int, col: Int) -> Bool {
-        return row >= 0 && row < rows + 2 && col >= 0 && col < cols + 2
+        return row >= 0 && row < self.rows + 2 && col >= 0 && col < self.cols + 2
     }
     
     func log() {
-        for row in (0..<(rows+2)).reversed() {
+        for row in (0..<(self.rows+2)).reversed() {
             var s = ""
-            for col in 0..<(cols+2) {
+            for col in 0..<(self.cols+2) {
                 s += self[row, col].letter()
             }
             
@@ -62,42 +65,43 @@ final class Board: BoardProtocol {
     
     subscript(row: Int, col: Int) -> Square {
         get {
-            assert(indexIsValid(row: row, col: col), "Index out of range")
-            return squares[(row * (cols + 2)) + col]
+            assert(self.indexIsValid(row: row, col: col), "Index out of range")
+            return self.squares[(row * (cols + 2)) + col]
         }
         set {
-            assert(indexIsValid(row: row, col: col), "Index out of range")
-            squares[(row * (cols + 2)) + col] = newValue
+            assert(self.indexIsValid(row: row, col: col), "Index out of range")
+            self.squares[(row * (cols + 2)) + col] = newValue
         }
     }
     
     func getAnglePoints() -> [BP] {
-        if (anglePoints.count == 0) {
-            for angle in getAngles() {
-                anglePoints.append(angle.point)
-                anglePoints.append(angle.diaPoint)
-                anglePoints.append(angle.verPoint)
-                anglePoints.append(angle.horPoint)
+        if (self.anglePoints.count == 0) {
+            let angles = self.getAngles()
+            for angle in angles {
+                self.anglePoints.append(angle.point)
+                self.anglePoints.append(angle.diaPoint)
+                self.anglePoints.append(angle.verPoint)
+                self.anglePoints.append(angle.horPoint)
             }
         }
         
-        return anglePoints
+        return self.anglePoints
     }
     
     func getAngles() -> [BoardAngle] {
-        if (angles.count == 0) {
-            angles.append(BoardAngle(BP(1, 1), diaPoint: BP(2, 2), horPoint: BP(1, 2), verPoint: BP(2, 1)))
-            angles.append(BoardAngle(BP(rows, 1), diaPoint: BP(rows - 1, 2), horPoint: BP(rows, 2), verPoint: BP(rows - 1, 1)))
-            angles.append(BoardAngle(BP(rows, cols), diaPoint: BP(rows - 1, cols - 1), horPoint: BP(rows, cols - 1), verPoint: BP(rows - 1, cols)))
-            angles.append(BoardAngle(BP(1, cols), diaPoint: BP(2, cols - 1), horPoint: BP(1, cols - 1), verPoint: BP(2, cols)))
+        if (self.angles.count == 0) {
+            self.angles.append(BoardAngle(BP(1, 1), diaPoint: BP(2, 2), horPoint: BP(1, 2), verPoint: BP(2, 1)))
+            self.angles.append(BoardAngle(BP(self.rows, 1), diaPoint: BP(self.rows - 1, 2), horPoint: BP(self.rows, 2), verPoint: BP(self.rows - 1, 1)))
+            self.angles.append(BoardAngle(BP(self.rows, cols), diaPoint: BP(self.rows - 1, self.cols - 1), horPoint: BP(self.rows, self.cols - 1), verPoint: BP(self.rows - 1, self.cols)))
+            self.angles.append(BoardAngle(BP(1, self.cols), diaPoint: BP(2, self.cols - 1), horPoint: BP(1, self.cols - 1), verPoint: BP(2, self.cols)))
         }
         return angles
     }
     
     func countOf(square: Square) -> Int {
         var count = 0
-        for row in 1...rows {
-            for col in 1...cols {
+        for row in 1...self.rows {
+            for col in 1...self.cols {
                 if (self[row, col] == square) {
                     count += 1
                 }
