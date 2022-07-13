@@ -11,7 +11,7 @@ import GameplayKit
 final
 class GameScene: SKScene, GameDelegate {
     private var boardNode = SKBoardNode(board: Board(rows: 8, cols: 8, defaultValue: .empty), size: nil)
-    private var game: Game!
+    private var game: Game
     
     override var size: CGSize {
         get {
@@ -19,21 +19,21 @@ class GameScene: SKScene, GameDelegate {
         }
         set(newSize) {
             super.size = newSize
-            let min = (size.width < size.height) ? size.width : size.height
+            let min = size.width < size.height ? size.width : size.height
             self.boardNode.size = CGSize(width: min, height: min)
-            self.boardNode.position = CGPoint(x: (size.width - self.boardNode.size!.width) / 2.0, y: (size.height - self.boardNode.size!.height) / 2.0)
+            self.boardNode.position = CGPoint(x: (size.width - min) / 2.0, y: (size.height - min) / 2.0)
         }
     }
     
     required override init(size: CGSize) {
-        super.init(size: size)
-        
         let rules = Rules(board: self.boardNode.board)
         let blackPlayer = Player(rules: rules)
-        let whitePlayer = PlayerMachine(rules: rules, level: .l5)
-        self.game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer, delegate: self)
+        let whitePlayer = PlayerMachine(rules: rules, level: .l6 )
+        self.game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer)
+        super.init(size: size)
         
-        addChild(self.boardNode)
+        self.game.delegate = self
+        self.addChild(self.boardNode)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -49,7 +49,7 @@ class GameScene: SKScene, GameDelegate {
     }
     
     func touchUp(atPoint pos: CGPoint) {
-        guard (self.game.waitingForTouch()) else { return }
+        guard self.game.waitingForTouch() else { return }
         let bp = self.boardNode.boardPoint(touchPoint: pos)
         
         print(bp)

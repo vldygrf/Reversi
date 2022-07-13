@@ -18,7 +18,7 @@ class BoardWeight {
     static func fill(weight: BoardProtocol, board: BoardProtocol, type: BoardWeightType) {
         switch type {
         case .greed, .greedSmart:
-            if (type == .greedSmart) {
+            if type == .greedSmart {
                 //Углы + смежные с углами клетки
                 for angle in board.getAngles() {
                     weight[angle.point.row, angle.point.col] = .weight(value: 200)
@@ -39,13 +39,13 @@ class BoardWeight {
             let angles = board.getAngles()
             for angle in angles {
                 weight[angle.point.row, angle.point.col] = .weight(value: 350)
-                let empty = (board[angle.point.row, angle.point.col] == .empty)
-                if ((!empty) && (weight[angle.diaPoint.row, angle.diaPoint.col].value != 0)) {
+                let empty = board[angle.point.row, angle.point.col] == .empty
+                if !empty && weight[angle.diaPoint.row, angle.diaPoint.col].value != 0 {
                     weight[angle.diaPoint.row, angle.diaPoint.col] = .weight(value: 0)
                     weight[angle.horPoint.row, angle.horPoint.col] = .weight(value: 0)
                     weight[angle.verPoint.row, angle.verPoint.col] = .weight(value: 0)
                 } else
-                if ((empty) && (weight[angle.diaPoint.row, angle.diaPoint.col].value != -85)) {
+                if empty && weight[angle.diaPoint.row, angle.diaPoint.col].value != -85 {
                     weight[angle.diaPoint.row, angle.diaPoint.col] = .weight(value: -85)
                     weight[angle.horPoint.row, angle.horPoint.col] = .weight(value: -12)
                     weight[angle.verPoint.row, angle.verPoint.col] = .weight(value: -12)

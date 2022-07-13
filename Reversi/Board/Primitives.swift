@@ -44,7 +44,7 @@ enum Square: Equatable {
     }
     
     func opposite() -> Square {
-        return (self == .white) ? .black : .white
+        return self == .white ? .black : .white
     }
     
     func resource() -> String {
@@ -81,11 +81,4 @@ struct BoardAngle {
     let diaPoint: BP
     let horPoint: BP
     let verPoint: BP
-    
-    init(_ point: BP, diaPoint: BP, horPoint: BP, verPoint: BP) {
-        self.point = point
-        self.diaPoint = diaPoint
-        self.horPoint = horPoint
-        self.verPoint = verPoint
-    }
 }

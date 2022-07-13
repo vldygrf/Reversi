@@ -61,13 +61,14 @@ class SKBoardNode: SKNode {
     }
     
     func applyBoard() {
-        DispatchQueue.main.async { [self] in
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             var index = 0
             let rows = self.board.rows
             for row in 1...rows {
                 let cols = self.board.cols
                 for col in 1...cols {
-                    if let child = children[index] as? SKChipNode/*, child.square != board[row, col]*/ {
+                    if let child = self.children[index] as? SKChipNode/*, child.square != board[row, col]*/ {
                         child.square = self.board[row, col]
                     }
                         

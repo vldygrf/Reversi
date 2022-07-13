@@ -23,22 +23,21 @@ class Game: GameProtocol, PlayerDelegate {
         }
     }
     
-    required init(rules: RulesProtocol, blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol, delegate: GameDelegate) {
+    required init(rules: RulesProtocol, blackPlayer: PlayerProtocol, whitePlayer: PlayerProtocol) {
         self.rules = rules
         self.blackPlayer = blackPlayer
         self.whitePlayer = whitePlayer
         self.blackPlayer.delegate = self
         self.whitePlayer.delegate = self
-        self.delegate = delegate
         self.findMove()
     }
     
     func findMove() {
-        if (self.rules.doesMoveExist(color: self.moveColor)) {
+        if self.rules.doesMoveExist(color: self.moveColor) {
             self.playerToMove().findMove(color: self.moveColor)
         } else {
             self.moveColor = self.moveColor.opposite()
-            if (self.rules.doesMoveExist(color: self.moveColor)) {
+            if self.rules.doesMoveExist(color: self.moveColor) {
                 self.playerToMove().findMove(color: self.moveColor)
             } else {
                 print("Game is over")
@@ -47,11 +46,11 @@ class Game: GameProtocol, PlayerDelegate {
     }
     
     func playerToMove() -> PlayerProtocol {
-        return (self.moveColor == .black) ? self.blackPlayer : self.whitePlayer
+        return self.moveColor == .black ? self.blackPlayer : self.whitePlayer
     }
     
     func waitingForTouch() -> Bool {
-        return (self.playerToMove() is Player) && (self.playerToMove().thinking)
+        return self.playerToMove() is Player && (self.playerToMove().thinking)
     }
     
     func canTake(move: BP) -> Bool {

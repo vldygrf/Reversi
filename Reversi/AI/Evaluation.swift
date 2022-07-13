@@ -32,7 +32,7 @@ final class Evaluation {
         var chips: Int = 0    //Кол-во фишек игрока
         var chipsOpposite: Int = 0    //Кол-во фишек противника
         
-        if (self.weightType == .mobility) {
+        if self.weightType == .mobility {
             /*let angles = weight.getAngles()   //работает немного быстрее
             for angle in angles {
                 if (self.board[angle.point.row, angle.point.col] == self.color) {
@@ -70,11 +70,11 @@ final class Evaluation {
             }*/
             let aps = self.weight.getAnglePoints()
             for ap in aps {
-                if (self.board[ap.row, ap.col] == self.color) {
+                if self.board[ap.row, ap.col] == self.color {
                     value += self.weight[ap.row, ap.col].value
                     chips += 1
                 } else
-                if (self.board[ap.row, ap.col] == self.colorOpposite) {
+                if self.board[ap.row, ap.col] == self.colorOpposite {
                     value -= self.weight[ap.row, ap.col].value
                     chipsOpposite -= 1
                 }
@@ -82,20 +82,20 @@ final class Evaluation {
             
             value += self.getMobilityWeight()
             
-            if (chips == 0) {
+            if chips == 0 {
                 value -= Values.bonus;    //Штрафуем
             } else
-            if (chipsOpposite == 0) {
+            if chipsOpposite == 0 {
                 value += Values.bonus;    //Стимулируем
             }
         } else {
             for row in 1...self.board.rows {
                 for col in 1...self.board.cols {
-                    if (self.board[row, col] == self.color) {
+                    if self.board[row, col] == self.color {
                         value += self.weight[row, col].value
                         //chips += 1
                     } else
-                    if (self.board[row, col] == self.colorOpposite) {
+                    if self.board[row, col] == self.colorOpposite {
                         value -= self.weight[row, col].value
                         //chipsOpposite += 1
                     }
@@ -110,11 +110,6 @@ final class Evaluation {
         var value: Int
         var potential: Int
         
-        init(value: Int, potential: Int) {
-            self.value = value
-            self.potential = potential
-        }
-        
         mutating func add(_ mobility: Mobility) {
             self.value += mobility.value
             self.potential += mobility.potential
@@ -128,7 +123,7 @@ final class Evaluation {
         var curr = start
         
         while(self.board[curr.row, curr.col] != .frame) {
-            if ((self.board[curr.row, curr.col] == .empty) && (qbb == self.color) && (qb == self.colorOpposite)) {
+            if self.board[curr.row, curr.col] == .empty && qbb == self.color && qb == self.colorOpposite {
                 mobility.value += 1
                 qbb = .frame
                 qb = .frame
@@ -136,13 +131,13 @@ final class Evaluation {
                 k += 1
                 continue    //потенц. моб. в этом случае считать не нужно
             }else
-            if ((self.board[curr.row, curr.col] == self.color) && (qbb == .frame) && (qb == self.colorOpposite)) {
+            if self.board[curr.row, curr.col] == self.color && qbb == .frame && qb == self.colorOpposite {
                 mobility.value += 1
                 mobility.potential -= 1    //данная пот. мобильность лишняя (обычная мобильность перебивает)
             }
             
             //Вычитаем мобильность противника
-            if ((self.board[curr.row, curr.col] == .empty) && (qbb == self.colorOpposite) && (qb == self.color)) {
+            if self.board[curr.row, curr.col] == .empty && qbb == self.colorOpposite && qb == self.color {
                 mobility.value -= 1
                 qbb = .frame
                 qb = .frame
@@ -150,33 +145,32 @@ final class Evaluation {
                 k += 1
                 continue    //потенц. моб. в этом случае считать не нужно
             }else
-            if ((self.board[curr.row, curr.col] == self.colorOpposite) && (qbb == .empty) && (qb == self.color)) {
+            if self.board[curr.row, curr.col] == self.colorOpposite && qbb == .empty && qb == self.color {
                 mobility.value -= 1
                 mobility.potential += 1     //данная пот. мобильность лишняя (обычная мобильность перебивает)
             }
             
             //Потенциальная мобильность
-            if (    (   (self.board[curr.row, curr.col] == .empty) && (qb == self.colorOpposite)
-                        &&  (k > 1)        //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
-                        &&  (self.board[curr.row + direction.row, curr.col + direction.col] != self.colorOpposite))    //эту потенц. мобильность посчит. в след. итерации
-                    ||  (   (self.board[curr.row, curr.col] == self.colorOpposite) && (qb == .empty)
-                        &&  (self.board[curr.row + direction.row, curr.col + direction.col] != .frame))
-                ) {//не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
+            if (    self.board[curr.row, curr.col] == .empty && qb == self.colorOpposite
+                 && k > 1       //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
+                 && self.board[curr.row + direction.row, curr.col + direction.col] != self.colorOpposite)    //эту потенц. мобильность посчит. в след. итерации
+                ||
+                (self.board[curr.row, curr.col] == self.colorOpposite && qb == .empty
+                 && self.board[curr.row + direction.row, curr.col + direction.col] != .frame) {//не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
                 mobility.potential += 1
             }
             
             //Вычитаем потенциальную мобильность противника
-            if (    (   (self.board[curr.row, curr.col] == .empty) && (qb == self.color)
-                        && (k > 1)        //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
-                        && (self.board[curr.row + direction.row, curr.col + direction.col] != color))    //эту потенц. мобильность посчит. в след. итерации
-                    ||  (   (self.board[curr.row, curr.col] == self.color) && (qb == .empty)
-                        && (self.board[curr.row, curr.col] != .frame))   //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
-                ) {
+            if (    self.board[curr.row, curr.col] == .empty && qb == self.color
+                 && k > 1        //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
+                 && self.board[curr.row + direction.row, curr.col + direction.col] != color)    //эту потенц. мобильность посчит. в след. итерации
+                ||
+                (   self.board[curr.row, curr.col] == self.color && qb == .empty
+                 && self.board[curr.row, curr.col] != .frame) {   //не нужно у края считать пот. мобильность (т.к. за краем фишек нет)
                 mobility.potential -= 1
             }
             
-            
-            if (self.board[curr.row, curr.col] != qb) {    //запоминаем пред. состояния
+            if self.board[curr.row, curr.col] != qb {    //запоминаем пред. состояния
                 qbb = qb
                 qb = self.board[curr.row, curr.col]
             }
@@ -187,7 +181,7 @@ final class Evaluation {
         
         return mobility
     }
-    //-------------------------------------------------------------------------------------------
+
     func getMobilityWeight() -> Int {
         var mobility = Mobility(value: 0, potential: 0)
         let items = self.board.cols
@@ -197,13 +191,13 @@ final class Evaluation {
             //горизонтали
             mobility.add(self.getLineMobilityWeight(start: BP(i, 1), direction: BP(0, 1)))
             
-            if (i < (self.board.cols - 2)) {
+            if i < (self.board.cols - 2) {
                 //главная диагональ и параллельные лежащие выше
                 mobility.add(self.getLineMobilityWeight(start: BP(1, i), direction: BP(1, 1)))
                 //побочная диагональ и паралллельные лежащие выше
                 mobility.add(self.getLineMobilityWeight(start: BP(board.cols - i + 1, 1), direction: BP(-1, 1)))
                 
-                if (i > 1) {
+                if i > 1 {
                     //диагонали паралллельные главной и лежащие ниже
                     mobility.add(self.getLineMobilityWeight(start: BP(i, 1), direction: BP(1, 1)))
                     //диагонали паралллельные побочной и лежащие ниже

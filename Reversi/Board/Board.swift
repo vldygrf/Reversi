@@ -13,8 +13,8 @@ class Board: BoardProtocol {
     let cols: Int
     let count: Int
     var squares: [Square] = []
-    private lazy var anglePoints: [BP] = []
-    private lazy var angles: [BoardAngle] = []
+    private var anglePoints: [BP] = []
+    private var angles: [BoardAngle] = []
     
     required init(rows: Int, cols: Int, defaultValue: Square) {
         self.rows = rows
@@ -48,7 +48,7 @@ class Board: BoardProtocol {
         self.squares = board.squares
     }
     
-    func indexIsValid(row: Int, col: Int) -> Bool {
+    private func indexIsValid(row: Int, col: Int) -> Bool {
         return row >= 0 && row < self.rows + 2 && col >= 0 && col < self.cols + 2
     }
     
@@ -75,7 +75,7 @@ class Board: BoardProtocol {
     }
     
     func getAnglePoints() -> [BP] {
-        if (self.anglePoints.count == 0) {
+        if self.anglePoints.count == 0 {
             let angles = self.getAngles()
             for angle in angles {
                 self.anglePoints.append(angle.point)
@@ -89,11 +89,11 @@ class Board: BoardProtocol {
     }
     
     func getAngles() -> [BoardAngle] {
-        if (self.angles.count == 0) {
-            self.angles.append(BoardAngle(BP(1, 1), diaPoint: BP(2, 2), horPoint: BP(1, 2), verPoint: BP(2, 1)))
-            self.angles.append(BoardAngle(BP(self.rows, 1), diaPoint: BP(self.rows - 1, 2), horPoint: BP(self.rows, 2), verPoint: BP(self.rows - 1, 1)))
-            self.angles.append(BoardAngle(BP(self.rows, cols), diaPoint: BP(self.rows - 1, self.cols - 1), horPoint: BP(self.rows, self.cols - 1), verPoint: BP(self.rows - 1, self.cols)))
-            self.angles.append(BoardAngle(BP(1, self.cols), diaPoint: BP(2, self.cols - 1), horPoint: BP(1, self.cols - 1), verPoint: BP(2, self.cols)))
+        if self.angles.count == 0 {
+            self.angles.append(BoardAngle(point: BP(1, 1), diaPoint: BP(2, 2), horPoint: BP(1, 2), verPoint: BP(2, 1)))
+            self.angles.append(BoardAngle(point: BP(self.rows, 1), diaPoint: BP(self.rows - 1, 2), horPoint: BP(self.rows, 2), verPoint: BP(self.rows - 1, 1)))
+            self.angles.append(BoardAngle(point: BP(self.rows, cols), diaPoint: BP(self.rows - 1, self.cols - 1), horPoint: BP(self.rows, self.cols - 1), verPoint: BP(self.rows - 1, self.cols)))
+            self.angles.append(BoardAngle(point: BP(1, self.cols), diaPoint: BP(2, self.cols - 1), horPoint: BP(1, self.cols - 1), verPoint: BP(2, self.cols)))
         }
         return angles
     }
