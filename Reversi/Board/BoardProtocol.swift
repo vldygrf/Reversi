@@ -18,5 +18,6 @@ protocol BoardProtocol: AnyObject {
     func getAnglePoints() -> [BP]
     func countOf(square: Square) -> Int
     var count: Int { get }
+    func within(bp: BP) -> Bool
     func log()
 }

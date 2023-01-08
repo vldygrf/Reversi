@@ -9,7 +9,7 @@ import Foundation
 
 final class Game: GameProtocol, PlayerDelegate {
     weak var delegate: GameDelegate?
-    private var rules: RulesProtocol
+    private(set) var rules: RulesProtocol
     private(set) var moveColor: Square = .black
     private(set) var blackPlayer: PlayerProtocol {
         didSet {

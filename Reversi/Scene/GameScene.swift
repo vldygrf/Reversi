@@ -27,7 +27,7 @@ final class GameScene: SKScene, GameDelegate {
         let board = Board(rows: 8, cols: 8, defaultValue: .empty)
         let rules = Rules(board: board)
         let blackPlayer = Player(rules: rules)
-        let whitePlayer = PlayerMachine(rules: rules, level: .l5)
+        let whitePlayer = PlayerMachine(rules: rules, level: .l4)
         self.game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer)
         self.boardNode = SKBoardNode(board: board, game: self.game, size: nil)
         super.init(size: size)
@@ -51,7 +51,7 @@ final class GameScene: SKScene, GameDelegate {
     func touchUp(atPoint pos: CGPoint) {
         guard self.game.waitingForTouch() else { return }
         let bp = self.boardNode.boardPoint(touchPoint: pos)
-        if self.game.canTake(move: bp) {
+        if self.game.rules.board.within(bp: bp) && self.game.canTake(move: bp) {
             self.game.take(move: bp)
         }
     }

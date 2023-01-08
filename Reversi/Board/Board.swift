@@ -107,4 +107,8 @@ final class Board: BoardProtocol {
         }
         return count
     }
+    
+    func within(bp: BP) -> Bool {
+        return bp.row >= 1 && bp.row <= self.rows && bp.col >= 1 && bp.col <= self.cols 
+    }
 }
