@@ -14,4 +14,5 @@ protocol GameProtocol {
     func canTake(move: BP) -> Bool
     func take(move: BP)
     func playerToMove() -> PlayerProtocol
+    func toTake(move: BP, color: Square) -> [BP]
 }

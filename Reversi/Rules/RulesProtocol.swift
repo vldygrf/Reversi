@@ -13,4 +13,5 @@ protocol RulesProtocol: AnyObject {
     func doesMoveExist(color: Square) -> Bool
     func doesMoveExist() -> Bool
     func make(move: BP, color: Square)
+    func toMake(move: BP, color: Square) -> [BP]
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BP {
+struct BP: Equatable {
     var row: Int
     var col: Int
     

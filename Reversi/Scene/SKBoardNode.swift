@@ -15,7 +15,7 @@ final class SKBoardNode: SKNode {
     }
     
     private var board: BoardProtocol {
-        didSet {
+        didSet { 
             self.resize()
         }
     }
@@ -24,10 +24,15 @@ final class SKBoardNode: SKNode {
     private var chips: [SKChipNode] = []
     private var squareWidth: CGFloat = 0.0
     private var squareHeight: CGFloat = 0.0
+    private var animationTextures: [SKTexture] = []
+    private(set) var animationIsActive = false
     
     required init(board: Board, game: GameProtocol, size: CGSize?) {
         self.board = board
         self.game = game
+        for i in 0..<36 {
+            self.animationTextures.append(SKTexture(imageNamed: "achip\(i)"))
+        }
         super.init()
         self.size = size
     }
@@ -74,6 +79,26 @@ final class SKBoardNode: SKNode {
         self.applyBoard()
     }
     
+    func animate(move: BP, color: Square, completion: @escaping () -> Void) {
+        let chipsToAnimate = self.game.toTake(move: move, color: color)
+        self.animationIsActive = chipsToAnimate.count > 0
+        guard self.animationIsActive else {
+            completion()
+            return
+        }
+        
+        self.board[move.row, move.col] = color
+        self.applyBoard()
+        
+        for chip in chipsToAnimate {
+            self[chip.row, chip.col]?.run(SKAction.animate(with: color == .black ? self.animationTextures.reversed() : self.animationTextures, timePerFrame: 0.03), completion: { [weak self] in
+                guard let self = self, chip == chipsToAnimate.last else { return }
+                self.animationIsActive = false
+                completion()
+            })
+        }
+    }
+    
     func applyBoard() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -95,7 +120,8 @@ final class SKBoardNode: SKNode {
     
     subscript(row: Int, col: Int) -> SKChipNode? {
         let index = (row - 1) * self.board.cols + (col - 1)
-        return children[index] as? SKChipNode
+        guard index >= 0, self.chips.count > index else { return nil }
+        return self.chips[index]
     }
     
     func boardPoint(touchPoint: CGPoint) -> BP {

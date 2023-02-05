@@ -8,7 +8,7 @@
 import SpriteKit
 import GameplayKit
 
-final class GameScene: SKScene, GameDelegate {
+final class GameScene: SKScene {
     override var size: CGSize {
         get {
             return super.size
@@ -70,6 +70,16 @@ final class GameScene: SKScene, GameDelegate {
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: boardNode)) }
+    }
+}
+
+extension GameScene: GameDelegate {
+    var animationIsActive: Bool {
+        return self.boardNode.animationIsActive
+    }
+    
+    func animate(move: BP, color: Square, completion: @escaping () -> Void) {
+        self.boardNode.animate(move: move, color: color, completion: completion)
     }
     
     func didMove() {

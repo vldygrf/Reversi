@@ -8,5 +8,7 @@
 import Foundation
 
 protocol GameDelegate: AnyObject {
+    func animate(move: BP, color: Square, completion: @escaping () -> Void)
     func didMove()
+    var animationIsActive: Bool { get }
 }

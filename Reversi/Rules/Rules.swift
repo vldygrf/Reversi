@@ -18,11 +18,11 @@ final class Rules: RulesProtocol {
         self.board = Board(board: rules.board)
     }
     
-    func opposite(square: Square, color: Square) -> Bool {
+    private func opposite(square: Square, color: Square) -> Bool {
         return (square == .black && color == .white) || (square == .white && color == .black)
     }
     
-    func isValid(direction: BP, start: BP, color: Square) -> Bool {
+    private func isValid(direction: BP, start: BP, color: Square) -> Bool {
         var enemyChips = false
             
         var pos = BP(start.row + direction.row, start.col + direction.col)
@@ -58,10 +58,8 @@ final class Rules: RulesProtocol {
         )
     }
     
-    func reverse(direction: BP, start: BP, color: Square) {
-        if !self.isValid(direction: direction, start: start, color: color) {
-            return
-        }
+    private func reverse(direction: BP, start: BP, color: Square) {
+        guard self.isValid(direction: direction, start: start, color: color) else { return }
         
         var pos = BP(start.row + direction.row, start.col + direction.col)
         while(self.opposite(square: self.board[pos.row, pos.col], color: color)) {
@@ -70,7 +68,7 @@ final class Rules: RulesProtocol {
         }
     }
     
-    func make(move:BP, color: Square) {
+    func make(move: BP, color: Square) {
         self.board[move.row, move.col] = color  //ставим фишку
         self.reverse(direction: BP(0, -1), start: move, color: color)
         self.reverse(direction: BP(1, -1), start: move, color: color)
@@ -80,6 +78,31 @@ final class Rules: RulesProtocol {
         self.reverse(direction: BP(-1, 1), start: move, color: color)
         self.reverse(direction: BP(-1, 0), start: move, color: color)
         self.reverse(direction: BP(-1, -1), start: move, color: color)
+    }
+    
+    private func toReverse(direction: BP, start: BP, color: Square) -> [BP] {
+        var result: [BP] = []
+        guard self.isValid(direction: direction, start: start, color: color) else { return result }
+        
+        var pos = BP(start.row + direction.row, start.col + direction.col)
+        while(self.opposite(square: self.board[pos.row, pos.col], color: color)) {
+            result.append(BP(pos.row, pos.col))
+            pos.add(direction)
+        }
+        return result
+    }
+    
+    func toMake(move: BP, color: Square) -> [BP] {
+        var result: [BP] = []
+        result.append(contentsOf: self.toReverse(direction: BP(0, -1), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(1, -1), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(1, 0), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(1, 1), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(0, 1), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(-1, 1), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(-1, 0), start: move, color: color))
+        result.append(contentsOf: self.toReverse(direction: BP(-1, -1), start: move, color: color))
+        return result
     }
     
     func doesMoveExist(color: Square) -> Bool {

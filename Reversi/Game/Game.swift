@@ -53,13 +53,21 @@ final class Game: GameProtocol, PlayerDelegate {
     }
     
     func canTake(move: BP) -> Bool {
+        guard let delegate = self.delegate, !delegate.animationIsActive else { return false }
         return self.rules.isValid(move: move, color: moveColor)
     }
     
     func take(move: BP) {
-        self.rules.make(move: move, color: self.moveColor)
-        self.moveColor = self.moveColor.opposite()
-        self.delegate?.didMove()
-        self.findMove()
+        self.delegate?.animate(move: move, color: self.moveColor, completion: { [weak self] in
+            guard let self = self else { return }
+            self.rules.make(move: move, color: self.moveColor)
+            self.moveColor = self.moveColor.opposite()
+            self.delegate?.didMove()
+            self.findMove()
+        })
+    }
+    
+    func toTake(move: BP, color: Square) -> [BP] {
+        return self.rules.toMake(move: move, color: color)
     }
 }
