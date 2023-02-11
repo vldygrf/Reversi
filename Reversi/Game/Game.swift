@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class Game: GameProtocol, PlayerDelegate {
+final class Game: GameProtocol {
     weak var delegate: GameDelegate?
     private(set) var rules: RulesProtocol
     private(set) var moveColor: Square = .black
@@ -57,6 +57,12 @@ final class Game: GameProtocol, PlayerDelegate {
         return self.rules.isValid(move: move, color: moveColor)
     }
     
+    func toTake(move: BP, color: Square) -> [BP] {
+        return self.rules.toMake(move: move, color: color)
+    }
+}
+
+extension Game: PlayerDelegate {
     func take(move: BP) {
         self.delegate?.animate(move: move, color: self.moveColor, completion: { [weak self] in
             guard let self = self else { return }
@@ -65,9 +71,5 @@ final class Game: GameProtocol, PlayerDelegate {
             self.delegate?.didMove()
             self.findMove()
         })
-    }
-    
-    func toTake(move: BP, color: Square) -> [BP] {
-        return self.rules.toMake(move: move, color: color)
     }
 }
