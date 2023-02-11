@@ -16,20 +16,19 @@ final class Board: BoardProtocol {
     private var angles: [BoardAngle] = []
     private(set) var squares: [Square] = []
     
-    required init(rows: Int, cols: Int, defaultValue: Square) {
+    required init(rows: Int, cols: Int, defaultValue: Square = .empty) {
         self.rows = rows
         self.cols = cols
         self.count = rows * cols
         self.squares = Array(repeating: defaultValue, count: (rows + bounds) * (cols + bounds))
     
-        for col in 0..<cols+bounds {
-            self[0, col] = .frame
-            self[rows + 1, col] = .frame
-        }
-        
-        for row in 0..<rows+bounds {
-            self[row, 0] = .frame
-            self[row, cols + 1] = .frame
+        var i = 0
+        while i < cols+bounds { //rows == cols
+            self[0, i] = .frame
+            self[rows + 1, i] = .frame
+            self[i, 0] = .frame
+            self[i, cols + 1] = .frame
+            i += 1
         }
         
         if defaultValue == .empty {   //game board
@@ -64,11 +63,11 @@ final class Board: BoardProtocol {
     
     subscript(row: Int, col: Int) -> Square {
         get {
-            assert(self.indexIsValid(row: row, col: col), "Index is out of range")
+            //assert(self.indexIsValid(row: row, col: col), "Index is out of range")
             return self.squares[(row * (cols + bounds)) + col]
         }
         set {
-            assert(self.indexIsValid(row: row, col: col), "Index is out of range")
+            //assert(self.indexIsValid(row: row, col: col), "Index is out of range")
             self.squares[(row * (cols + bounds)) + col] = newValue
         }
     }
@@ -76,11 +75,13 @@ final class Board: BoardProtocol {
     func getAnglePoints() -> [BP] {
         if self.anglePoints.count == 0 {
             let angles = self.getAngles()
-            for angle in angles {
-                self.anglePoints.append(angle.point)
-                self.anglePoints.append(angle.diaPoint)
-                self.anglePoints.append(angle.verPoint)
-                self.anglePoints.append(angle.horPoint)
+            var i = 0
+            while i < angles.count {
+                self.anglePoints.append(angles[i].point)
+                self.anglePoints.append(angles[i].diaPoint)
+                self.anglePoints.append(angles[i].verPoint)
+                self.anglePoints.append(angles[i].horPoint)
+                i += 1
             }
         }
         return self.anglePoints

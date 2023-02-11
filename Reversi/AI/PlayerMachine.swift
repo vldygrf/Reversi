@@ -42,9 +42,11 @@ final class PlayerMachine: Player {
         
         var nWeight: Int
         let rows = rules.board.rows
-        for row in 1...rows {
+        var row = 1
+        while row <= rows {
             let cols = rules.board.cols
-            for col in 1...cols {
+            var col = 1
+            while col <= cols {
                 if rules.isValid(move: BP(row, col), color: moveColor) {
                     let newRules = Rules(rules: rules)
                     newRules.make(move: BP(row, col), color: moveColor)
@@ -65,7 +67,9 @@ final class PlayerMachine: Player {
                         }
                     }
                 }
+                col += 1
             }
+            row += 1
         }
         
         if bestWeight == Int.min {    //возможные ходы цветом moveColor отсутствуют

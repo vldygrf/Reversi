@@ -69,15 +69,18 @@ final class Evaluation {
                 }
             }*/
             let aps = self.weight.getAnglePoints()
-            for ap in aps {
-                if self.board[ap.row, ap.col] == self.color {
-                    value += self.weight[ap.row, ap.col].value
+            var i = 0
+            while i < aps.count {
+                if self.board[aps[i].row, aps[i].col] == self.color {
+                    value += self.weight[aps[i].row, aps[i].col].value
                     chips += 1
                 } else
-                if self.board[ap.row, ap.col] == self.colorOpposite {
-                    value -= self.weight[ap.row, ap.col].value
+                if self.board[aps[i].row, aps[i].col] == self.colorOpposite {
+                    value -= self.weight[aps[i].row, aps[i].col].value
                     chipsOpposite -= 1
                 }
+                
+                i += 1
             }
             
             value += self.getMobilityWeight()
@@ -89,8 +92,10 @@ final class Evaluation {
                 value += Values.bonus;    //Стимулируем
             }
         } else {
-            for row in 1...self.board.rows {
-                for col in 1...self.board.cols {
+            var row = 1
+            while row <= self.board.rows {
+                var col = 1
+                while col <= self.board.cols {
                     if self.board[row, col] == self.color {
                         value += self.weight[row, col].value
                         //chips += 1
@@ -99,7 +104,9 @@ final class Evaluation {
                         value -= self.weight[row, col].value
                         //chipsOpposite += 1
                     }
+                    col += 1
                 }
+                row += 1
             }
         }
         
@@ -184,8 +191,8 @@ final class Evaluation {
 
     func getMobilityWeight() -> Int {
         var mobility = Mobility(value: 0, potential: 0)
-        let items = self.board.cols
-        for i in 1...items { //т.к. поле у нас квадратное делаем в одном цикле
+        var i = 1
+        while i <= self.board.cols { //т.к. поле у нас квадратное делаем в одном цикле
             //вертикали
             mobility.add(self.getLineMobilityWeight(start: BP(1, i), direction: BP(1, 0)))
             //горизонтали
@@ -204,6 +211,8 @@ final class Evaluation {
                     mobility.add(self.getLineMobilityWeight(start: BP(board.cols, i), direction: BP(-1, 1)))
                 }
             }
+            
+            i += 1
         }
         
         return mobility.value * Values.mobility + mobility.potential * Values.potentialMobility

@@ -27,7 +27,7 @@ final class GameScene: SKScene {
         let board = Board(rows: 8, cols: 8, defaultValue: .empty)
         let rules = Rules(board: board)
         let blackPlayer = Player(rules: rules)
-        let whitePlayer = PlayerMachine(rules: rules, level: .l4)
+        let whitePlayer = PlayerMachine(rules: rules, level: .l5)
         self.game = Game(rules: rules, blackPlayer: blackPlayer, whitePlayer: whitePlayer)
         self.boardNode = SKBoardNode(board: board, game: self.game, size: nil)
         super.init(size: size)
